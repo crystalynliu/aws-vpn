@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+project_dir="$(cd .; pwd)"
+
+update_host(){
+  sed -i -e '/local.personal.vpn/d' /etc/hosts
+  echo "$1 local.personal.vpn" >> /etc/hosts
+}
+
+query_vpn_ip(){
+  echo `aws ec2 describe-instances --filters Name=tag:aws:cloudformation:stack-name,Values=personal-vpn --query "Reservations[0].Instances[0].PublicIpAddress"`
+}
+
+main(){
+  if [[ -z "$AWS_DEFAULT_REGION" ]]; then
+    echo "Please set AWS_DEFAULT_REGION"
+    exit 1
+  fi
+
+  local ip=`query_vpn_ip`
+  if [[ -z "$ip" ]]; then
+    echo "Failed to fetch vpn ip address"
+    exit 1
+  fi
+
+  update_host ${ip//\"}
+}
+
+main $@
