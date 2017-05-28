@@ -6,12 +6,13 @@ This repo is build based on [AWS-VPN-Server-Setup](https://github.com/webdigi/AW
 
 ## Create VPN in AWS
 1. Modify the file *parameter_without_elastic_ip.json*
+
   * Speed
-    Network Speed of VPN Server. Standard.VPN-Free should do for most browsing and video.
-    Support Values
-      * Standard.VPN-Free,
-      * High.Speed.VPN-Paid,
-      * Ultra.High.Speed.VPN-Paid
+      Network Speed of VPN Server. Standard.VPN-Free should do for most browsing and video.
+      Support Values
+        * Standard.VPN-Free,
+        * High.Speed.VPN-Paid,
+        * Ultra.High.Speed.VPN-Paid
   * Username
     VPN user name
   * VPNPassword
