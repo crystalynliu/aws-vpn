@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-project_dir="$(cd .; pwd)"
+usage(){
+  echo "Usage: $0 <reset|start|stop>"
+  exit 1
+}
 
 update_host(){
   sed -i -e '/local.personal.vpn/d' /etc/hosts
@@ -7,7 +10,39 @@ update_host(){
 }
 
 query_vpn_ip(){
-  echo `aws ec2 describe-instances --filters Name=tag:aws:cloudformation:stack-name,Values=personal-vpn --query "Reservations[0].Instances[0].PublicIpAddress"`
+  echo `aws ec2 describe-instances --filters Name=tag:aws:cloudformation:stack-name,Values=personal-vpn Name=instance-state-name,Values=running --query "Reservations[0].Instances[0].PublicIpAddress"`
+}
+
+query_autoscaling_name(){
+  echo `aws ec2 describe-instances --filters Name=tag:aws:cloudformation:stack-name,Values=personal-vpn --query "Reservations[0].Instances[0].Tags[?Key=='aws:autoscaling:groupName']|[0].Value"`
+}
+
+reset_vpn_ip(){
+  local ip=`query_vpn_ip`
+  if [[ -z "$ip" ]]; then
+    echo "Failed to fetch vpn ip address"
+    exit 1
+  fi
+
+  update_host ${ip//\"}
+}
+
+stop_vpn_server(){
+  local name=`query_autoscaling_name`
+  if [[ -z "$name" ]]; then
+    echo "Failed to fetch autoscaling name"
+    exit 1
+  fi
+  aws autoscaling update-auto-scaling-group --auto-scaling-group-name ${name//\"} --min-size 0 --desired-capacity 0
+}
+
+start_vpn_server(){
+  local name=`query_autoscaling_name`
+  if [[ -z "$name" ]]; then
+    echo "Failed to fetch autoscaling name"
+    exit 1
+  fi
+  aws autoscaling update-auto-scaling-group --auto-scaling-group-name ${name//\"} --min-size 1 --desired-capacity 1
 }
 
 main(){
@@ -16,13 +51,20 @@ main(){
     exit 1
   fi
 
-  local ip=`query_vpn_ip`
-  if [[ -z "$ip" ]]; then
-    echo "Failed to fetch vpn ip address"
-    exit 1
-  fi
-
-  update_host ${ip//\"}
+  case $1 in
+    "reset")
+      reset_vpn_ip
+      ;;
+    "start")
+      start_vpn_server
+      ;;
+    "stop")
+      stop_vpn_server
+      ;;
+    *)
+      usage
+      ;;
+  esac
 }
 
 main $@
