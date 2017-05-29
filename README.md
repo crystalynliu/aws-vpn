@@ -32,7 +32,7 @@ This repo is built based on [AWS-VPN-Server-Setup](https://github.com/webdigi/AW
      The VPC to start instance
 2. Create the stack
 ```bash
-AWS_DEFAULT_REGION=<region> AWS_ACCESS_KEY_ID=<access key> AWS_SECRET_ACCESS_KEY=<secret access key> make vpn_without_elastic_ip
+AWS_DEFAULT_REGION=<region> AWS_ACCESS_KEY_ID=<access key> AWS_SECRET_ACCESS_KEY=<secret access key> make deploy
 ```
 ## Setup VPN on computer
 please set the host to *local.personal.vpn*
