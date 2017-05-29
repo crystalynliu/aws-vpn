@@ -20,7 +20,6 @@ STACK_NAME="${app_name}"
 template="file://${project_dir}/cloudformation/${template_name}"
 parameters="file://${project_dir}/cloudformation/${parameter_name}"
 
-
 _stack_exists "${STACK_NAME}" "${region}" && action="update" || action="create"
 echo "Waiting for stack ${STACK_NAME} to be ${action}d."
 

@@ -56,6 +56,10 @@
     }
   },
   "Outputs": {
+    "AutoScalingName": {
+      "Description": "The name of AutoScalingGroup",
+      "Value": { "Ref": "VPNAutoScalingGroup" }
+    },
   },
   "Parameters": {
     "Speed": {
