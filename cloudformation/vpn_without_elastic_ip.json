@@ -14,6 +14,9 @@
       }
     },
     "AWSRegionArch2AMI": {
+      "ap-northeast-2": {
+        "HVM64": "ami-f317cb9d"
+      },
       "ap-northeast-1": {
         "HVM64": "ami-20b6aa21"
       },
@@ -47,12 +50,12 @@
       "eu-west-2": {
         "HVM64": "ami-d6cbc1b2"
       },
-      "eu-west-2": { 
-        "HVM64": "ami-45eae021"  
+      "eu-west-2": {
+        "HVM64": "ami-45eae021"
       },
-      "us-east-2": { 
-        "HVM64": "ami-41d48e24"  
-      }          
+      "us-east-2": {
+        "HVM64": "ami-41d48e24"
+      }
     }
   },
   "Outputs": {
@@ -103,6 +106,10 @@
     "VPNVpcId": {
       "Description": "VPN vpc id",
       "Type": "String"
+    },
+    "KeyName": {
+      "Description": "The name of key pair used by instance",
+      "Type": "String"
     }
   },
   "Resources": {
@@ -113,6 +120,12 @@
           "Ref": "VPNVpcId"
         },
         "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "FromPort": "22",
+            "IpProtocol": "tcp",
+            "ToPort": "22"
+          },
           {
             "CidrIp": "0.0.0.0/0",
             "FromPort": "500",
@@ -149,20 +162,20 @@
     },
     "VPNAutoScalingGroup": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
-      "CreationPolicy":{  
-        "ResourceSignal":{  
+      "CreationPolicy":{
+        "ResourceSignal":{
           "Count":1,
           "Timeout":"PT5M"
         },
-        "AutoScalingCreationPolicy":{  
+        "AutoScalingCreationPolicy":{
           "MinSuccessfulInstancesPercent":100
         }
       },
-      "UpdatePolicy":{  
-        "AutoScalingScheduledAction":{  
+      "UpdatePolicy":{
+        "AutoScalingScheduledAction":{
           "IgnoreUnmodifiedGroupSizeProperties":false
         },
-        "AutoScalingReplacingUpdate":{  
+        "AutoScalingReplacingUpdate":{
           "WillReplace":true
         }
       },
@@ -181,10 +194,10 @@
         }
       }
     },
-    "VPNScheduleUP":{  
+    "VPNScheduleUP":{
       "Type":"AWS::AutoScaling::ScheduledAction",
-      "Properties":{  
-        "AutoScalingGroupName":{  
+      "Properties":{
+        "AutoScalingGroupName":{
           "Ref":"VPNAutoScalingGroup"
         },
         "DesiredCapacity":1,
@@ -192,10 +205,10 @@
         "Recurrence":"0 11 * * *"
       }
     },
-    "VPNScheduleDown":{  
+    "VPNScheduleDown":{
       "Type":"AWS::AutoScaling::ScheduledAction",
-      "Properties":{  
-        "AutoScalingGroupName":{  
+      "Properties":{
+        "AutoScalingGroupName":{
           "Ref":"VPNAutoScalingGroup"
         },
         "DesiredCapacity":0,
@@ -214,6 +227,9 @@
             },
             "HVM64"
           ]
+        },
+        "KeyName": {
+          "Ref": "KeyName"
         },
         "InstanceType": {
           "Fn::FindInMap": [

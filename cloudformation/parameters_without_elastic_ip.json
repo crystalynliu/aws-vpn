@@ -22,5 +22,9 @@
   {
     "ParameterKey": "VPNVpcId",
     "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": ""
   }
 ]
