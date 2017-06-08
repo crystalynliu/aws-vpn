@@ -9,3 +9,12 @@ start:
 
 stop:
 	./vpn_manage stop
+
+start_tunnel: reset
+	./vpn_manage start_tunnel
+
+stop_tunnel:
+	./vpn_manage stop_tunnel
+
+check_tunnel:
+	./vpn_manage check_tunnel

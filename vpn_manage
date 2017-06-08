@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 usage(){
-  echo "Usage: $0 <reset|start|stop>"
+  echo "Usage: $0 <reset|start|stop|start_tunnel|stop_tunnel|check_tunnel>"
   exit 1
 }
 
@@ -45,21 +45,53 @@ start_vpn_server(){
   aws autoscaling update-auto-scaling-group --auto-scaling-group-name ${name//\"} --min-size 1 --desired-capacity 1
 }
 
-main(){
+start_ssh_tunnel(){
+  local key_path=$1
+  if [[ ! -f "$key_path" ]]; then
+    echo "${key_path} is not a file"
+    exit 1
+  fi
+	ssh -M -S personal-vpn-socket -f -i $key_path -D 15888 -C -q -N ubuntu@local.personal.vpn
+}
+
+stop_ssh_tunnel(){
+	ssh -S personal-vpn-socket -O exit ubuntu@local.personal.vpn
+}
+
+check_ssh_tunnel(){
+	ssh -S personal-vpn-socket -O check ubuntu@local.personal.vpn
+}
+
+check_environment(){
   if [[ -z "$AWS_DEFAULT_REGION" ]]; then
     echo "Please set AWS_DEFAULT_REGION"
     exit 1
   fi
+}
 
+main(){
   case $1 in
     "reset")
+      check_environment
       reset_vpn_ip
       ;;
     "start")
+      check_environment
       start_vpn_server
       ;;
     "stop")
+      check_environment
       stop_vpn_server
+      ;;
+    "start_tunnel")
+      check_environment
+      start_ssh_tunnel ./personal-vpn.pem
+      ;;
+    "stop_tunnel")
+      stop_ssh_tunnel
+      ;;
+    "check_tunnel")
+      check_ssh_tunnel
       ;;
     *)
       usage
