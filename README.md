@@ -3,6 +3,7 @@ This repo is built based on [AWS-VPN-Server-Setup](https://github.com/webdigi/AW
 * This repo can create vpn server on AWS with AutoScalingGroup
 * The vpn server will running between 19:00 GTM+8 and 22:00 GTM+8 every day
 * You can start or stop the vpn server manually
+* You can simple use ssh tunnel as proxy
 
 ## Create VPN in AWS
 1. Modify the file *parameter_without_elastic_ip.json*
@@ -30,6 +31,9 @@ This repo is built based on [AWS-VPN-Server-Setup](https://github.com/webdigi/AW
    * VPNVpcId
 
      The VPC to start instance
+   * KeyName
+
+     The key pair name used by instance
 2. Create the stack
 ```bash
 AWS_DEFAULT_REGION=<region> AWS_ACCESS_KEY_ID=<access key> AWS_SECRET_ACCESS_KEY=<secret access key> make deploy
@@ -52,4 +56,15 @@ AWS_ACCESS_KEY_ID=<access key> AWS_SECRET_ACCESS_KEY=<secret access key> make st
 ```bash
 AWS_ACCESS_KEY_ID=<access key> AWS_SECRET_ACCESS_KEY=<secret access key> make start
 ```
-
+## Start SSH tunnel on port 15888
+```bash
+sudo AWS_DEFAULT_REGION=<region> AWS_ACCESS_KEY_ID=<access key> AWS_SECRET_ACCESS_KEY=<secret access key> make start_tunnel
+```
+## Stop SSH tunnel
+```bash
+sudo make stop_tunnel
+```
+## Check SSH tunnel status
+```bash
+sudo make check_tunnel
+```
