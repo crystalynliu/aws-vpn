@@ -68,3 +68,10 @@ sudo make stop_tunnel
 ```bash
 sudo make check_tunnel
 ```
+## Create soft link to manage vpn
+```bash
+ln -s <repo folder>/aws-vpn/vpn_manage /usr/local/bin/vpn_tool
+AWS_ACCESS_KEY_ID=<access key> AWS_SECRET_ACCESS_KEY=<secret access key> vpn_tool stop
+AWS_ACCESS_KEY_ID=<access key> AWS_SECRET_ACCESS_KEY=<secret access key> vpn_tool start
+sudo AWS_DEFAULT_REGION=<region> AWS_ACCESS_KEY_ID=<access key> AWS_SECRET_ACCESS_KEY=<secret access key> vpn_tool reset
+```
