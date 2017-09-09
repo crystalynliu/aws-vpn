@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "Speed",
-    "ParameterValue": "Standard.VPN-Free"
+    "ParameterValue": ""
   }, 
   {
     "ParameterKey": "Username",
@@ -25,6 +25,18 @@
   },
   {
     "ParameterKey": "KeyName",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "HostZone",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "HostZoneID",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "RoleName",
     "ParameterValue": ""
   }
 ]
